@@ -262,6 +262,9 @@ defmodule Assent.StrategyTest do
 
     assert Strategy.to_url("http://example.com", "/path", a: 1, b: [c: 2, d: [e: 3]], f: [4, 5]) ==
              "http://example.com/path?a=1&b[c]=2&b[d][e]=3&f[]=4&f[]=5"
+
+    assert Strategy.to_url("http://example.com", "/path?parameter=value", a: 1) ==
+             "http://example.com/path?parameter=value&a=1"
   end
 
   test "normalize_userinfo/2" do

@@ -145,7 +145,34 @@ defmodule Assent.Strategy do
   def to_url(base_url, uri, []), do: endpoint(base_url, uri)
 
   def to_url(base_url, uri, params) do
-    endpoint(base_url, uri) <> "?" <> encode_query(params)
+    {base_uri, uri_params} = split_uri_params(uri)
+
+    endpoint(base_url, base_uri) <> "?" <> encode_query(uri_params ++ params)
+  end
+
+  defp split_uri_params(uri) do
+    params = extract_params(uri)
+    uri = extract_base_url(uri)
+    {uri, params}
+  end
+
+  defp extract_params(uri) do
+    %URI{query: params} = URI.parse(uri)
+
+    case params do
+      nil ->
+        []
+
+      _ ->
+        params
+        |> URI.query_decoder()
+        |> Enum.to_list()
+    end
+  end
+
+  defp extract_base_url(uri) do
+    [base | _] = String.split(uri, "?")
+    base
   end
 
   defp encode_query(enumerable) do
