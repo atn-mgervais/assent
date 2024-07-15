@@ -296,6 +296,13 @@ defmodule Assent.Strategy.OAuth2 do
     {:ok, token}
   end
 
+  defp process_access_token_response(
+         {:ok, %HTTPResponse{status: status, body: %{"id_token" => _} = token}}
+       )
+       when status in [200, 201] do
+    {:ok, token}
+  end
+
   defp process_access_token_response(any), do: process_response(any)
 
   defp process_response({:ok, %HTTPResponse{} = response}),
